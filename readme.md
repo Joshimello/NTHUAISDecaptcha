@@ -3,8 +3,8 @@
 Solving NTHU AIS captcha by image recognition using convnets via tensorflow
 
 > [!TIP]
-> This project was made for [NTHUMods](https://nthumods.com/)!  
-> Go check it out! It's [open source](https://github.com/nthumodifications/courseweb) too!
+> This project was made for <a href="https://nthumods.com" target="_blank">NTHUMods</a>!  
+> Go check it out! It's <a href="https://github.com/nthumodifications/courseweb" target="_blank">open source</a> too!
 
 ## Installation (API)
 
