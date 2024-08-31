@@ -1,0 +1,6 @@
+fastapi==0.109.0
+keras==3.5.0
+numpy==1.25.0
+opencv_python==4.6.0.66
+Requests==2.31.0
+tensorflow==2.16.1
