@@ -1,3 +1,6 @@
+import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
 from time import time
 import tensorflow as tf
 import urllib.request
@@ -5,9 +8,11 @@ import numpy as np
 import requests
 import cv2
 from bs4 import BeautifulSoup
-import os
+import threading
+import re
 
-model = tf.lite.Interpreter(model_path='model.tflite', num_threads=4)
+counter = 0
+counter_lock = threading.Lock()
 
 def load(url):
   response = urllib.request.urlopen(url)
@@ -48,6 +53,7 @@ def uwu(url):
     img = img / 255.0
     img = np.expand_dims(img, axis=0)
 
+    model = tf.lite.Interpreter(model_path='model.tflite', num_threads=4)
     input_details = model.get_input_details()
     output_details = model.get_output_details()
     model.allocate_tensors()
@@ -60,23 +66,39 @@ def uwu(url):
   answer = ''.join(map(str, answers))
   return answer
 
-def get_one():
+def get_url():
   url = 'https://www.ccxp.nthu.edu.tw/ccxp/INQUIRE/'
   response = requests.get(url)
-  soup = BeautifulSoup(response.content, "html.parser")
-  img_tag = soup.find_all("img", src=lambda x: x and "auth_img.php?pwdstr=" in x)
-  if img_tag:
-    img_url = img_tag[0]['src']
-    answer = uwu(url + img_url)
-    img_response = requests.get(url + img_url)
-    with open(f'images/{answer}.png', 'wb') as f:
-      f.write(img_response.content)
+  html_text = response.text
+  match = re.search(r'<img\s+src=auth_img\.php\?pwdstr=([0-9\-]+)', html_text)
+  return url + 'auth_img.php?pwdstr=' + match.group(1)
+
+def get_one():
+  global counter
+  answer = ''
+  url = get_url()
+  while (len(answer) != 6):
+    answer = uwu(url)
+  img_response = requests.get(url)
+  with open(f'images/{answer}.png', 'wb') as f:
+    f.write(img_response.content)
+    with counter_lock:
+      counter += 1
+      print(f'#{counter} [{answer}]')
       
 def main():
   if not os.path.exists('images'):
     os.makedirs('images')
-  for i in range(100):
-    get_one()
-    print(f'Got {i + 1} images')
     
+  num_images = 100
+  
+  threads = []
+  for i in range(num_images):
+    thread = threading.Thread(target=get_one)
+    thread.start()
+    threads.append(thread)
+    
+  for thread in threads:
+    thread.join()
+  
 main()
