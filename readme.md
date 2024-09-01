@@ -155,7 +155,7 @@ Note: I am not a professional machine learning engineer, so any help or advice i
 
 - [Keras - Automatic Speech Recognition using CTC](https://keras.io/examples/audio/ctc_asr/)
 - [Hugging Face - keras-io/ocr-for-captcha](https://huggingface.co/keras-io/ocr-for-captcha)
-- [Not a reference, but I wrote this for fun for a image processing class while working on this](https://github.com/Joshimello/NTHUAISDecaptcha/blob/main/extras/cnn_seg.pdf)
+- [Not a reference, but I wrote this for fun for a image processing class while working on cnn_seg](https://github.com/Joshimello/NTHUAISDecaptcha/blob/main/extras/cnn_seg.pdf)
 
 ## Special Thanks
 
