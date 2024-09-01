@@ -6,12 +6,23 @@ Solving NTHU AIS captcha by image recognition using convnets via tensorflow
 > This project was made for <a href="https://nthumods.com" target="_blank">NTHUMods</a>!  
 > Go check it out! It's <a href="https://github.com/nthumodifications/courseweb" target="_blank">open source</a> too!
 
+## Introduction
+
+This project is a captcha solver for the NTHU AIS captcha system.  
+There is currently two different methods of recognition available.
+- (cnn_seg) Recognition via segmentation and CNN
+- (cnn_ctc) Recognition via CNN trained with a CTC loss function
+
+Depending on the use case, different methods may be more suitable.
+
 ## Installation (API)
 
 To run the recognition API
 
 ```bash
 pip install -r requirements.txt
+or
+pip install -r requirements-windows.txt
 ```
 
 Then run the script
@@ -25,6 +36,8 @@ Or run manually
 ```bash
 sudo gunicorn main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:5000
 ```
+
+Remember to replace "main" with the name of the file containing the FastAPI app.
 
 ## Usage (API)
 
@@ -40,7 +53,7 @@ Or visit the fastAPI docs at
 https://example.api:5000/docs
 ```
 
-## Usage (Pre-trained Model)
+## CNN_SEG Usage (Pre-trained Model)
 
 Two formats of the audio recognition model is available in the /models folder  
 These models are for single digit recognition, separation is still required
@@ -70,6 +83,13 @@ model.invoke()
 
 prediction = model.get_tensor(output_details[0]['index'])
 ```
+
+## CNN_CTC Usage (Pre-trained Model)
+
+There are a few variations of the CTC model available in the /models folder  
+Some options containing the CTCLoss layer (if you want to train further)
+
+
 
 ## Usage (Training/Notebook)
 
