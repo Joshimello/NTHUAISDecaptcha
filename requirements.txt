@@ -5,3 +5,4 @@ opencv_python==4.6.0.66
 Requests==2.31.0
 tflite_runtime==2.14.0
 tensorflow==2.16.1
+gunicorn==23.0.0
