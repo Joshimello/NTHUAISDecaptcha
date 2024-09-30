@@ -4,7 +4,7 @@ import numpy as np
 import requests 
 import matplotlib.pyplot as plt
 
-url = 'https://www.ccxp.nthu.edu.tw/ccxp/INQUIRE/auth_img.php?pwdstr=20240831-517142819400'
+url = 'https://www.ccxp.nthu.edu.tw/ccxp/INQUIRE/JH/mod/auth_img/auth_img.php?ACIXSTORE=fsi5992afd4s8abo2fk029as60'
 model = keras.models.load_model('../models/cnn_ctc/model.h5', compile=False)
 
 characters = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -27,7 +27,7 @@ def preprocess_image(img_content, img_height, img_width):
 def decode_batch_predictions(pred):
     input_len = np.ones(pred.shape[0]) * pred.shape[1]
     results = keras.backend.ctc_decode(pred, input_length=input_len, greedy=True)[0][0][
-        :, :6
+        :, :3
     ]
     output_text = []
     for res in results:

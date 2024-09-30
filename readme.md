@@ -145,6 +145,11 @@ You can benchmark the performance of the models using the scripts in the benchma
 
 Results will be published soon.
 
+## Future plans
+
+Multi digit recognition via  
+(conv + pool + norm) * n + attention rnn + lstm * 2 + dense + ctc loss
+
 ## Contributing
 
 Contributions are always welcomed! If you have any ideas or improvements, feel free to fork the repository, make your changes, and submit a pull request. Also, feel free to open an issue if you have any suggestions or feedback.

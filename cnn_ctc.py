@@ -6,6 +6,7 @@ import requests
 
 app = FastAPI()
 model = tf.lite.Interpreter(model_path='models/cnn_ctc/model_quantized.tflite', num_threads=4)
+model_3d = tf.lite.Interpreter(model_path='models/cnn_ctc_3d/model_quantized.tflite', num_threads=4)
 
 characters = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 char_to_num = tf.keras.layers.StringLookup(vocabulary=characters, mask_token=None)
@@ -28,17 +29,41 @@ def decode_batch_predictions(pred):
     output_text.append(res)
   return output_text
 
+def decode_batch_predictions_3d(pred):
+  input_len = np.ones(pred.shape[0]) * pred.shape[1]
+  results = tf.keras.backend.ctc_decode(pred, input_length=input_len, greedy=True)[0][0][:, :3]
+  output_text = []
+  for res in results:
+    res = tf.strings.reduce_join(num_to_char(res)).numpy().decode("utf-8")
+    output_text.append(res)
+  return output_text
+
 @app.get('/', response_class=PlainTextResponse)
-async def uwu(url):
+async def uwu(url: str, d: int | None = None):
   response = requests.get(url)
-  imgs = preprocess_image(response.content, 32, 104)
+
+  imgs = None
+  preds = None
+  preds_texts = None
   
-  input_details = model.get_input_details()
-  output_details = model.get_output_details()
-  model.allocate_tensors()
-  model.set_tensor(input_details[0]['index'], imgs)
-  model.invoke()
-  preds = model.get_tensor(output_details[0]['index'])
+  if d == 3:
+    imgs = preprocess_image(response.content, 30, 42)
+    input_details = model_3d.get_input_details()
+    output_details = model_3d.get_output_details()
+    model_3d.allocate_tensors()
+    model_3d.set_tensor(input_details[0]['index'], imgs)
+    model_3d.invoke()
+    preds = model_3d.get_tensor(output_details[0]['index'])
+    preds_texts = decode_batch_predictions_3d(preds)
     
-  preds_texts = decode_batch_predictions(preds)
+  else:
+    imgs = preprocess_image(response.content, 32, 104)
+    input_details = model.get_input_details()
+    output_details = model.get_output_details()
+    model.allocate_tensors()
+    model.set_tensor(input_details[0]['index'], imgs)
+    model.invoke()
+    preds = model.get_tensor(output_details[0]['index'])
+    preds_texts = decode_batch_predictions(preds)
+  
   return preds_texts[0]
