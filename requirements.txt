@@ -7,3 +7,4 @@ tflite_runtime==2.14.0
 tensorflow==2.16.1
 gunicorn==23.0.0
 uvicorn==0.30.6
+setuptools==80.9.0
